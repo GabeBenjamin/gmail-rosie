@@ -93,3 +93,7 @@ client_secret.json
 
 .credentials/
 .idea/
+.DS_Store
+dependencies/
+*.pickle
+*.zip

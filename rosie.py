@@ -9,6 +9,11 @@ def handler(event, context):
     information to your handler. This parameter is of the LambdaContext type.
     """
     pass
+def setUp():
+    home_dir = os.path.dirname(os.path.realpath(__file__))
+    label_id_pickle = os.path.join(home_dir, 'label_id_map.pickle')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
 service = None
 def getService():
     credentials = get_credentials()

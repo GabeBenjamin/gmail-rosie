@@ -9,6 +9,7 @@ from utils import fetchLabelInfo
 from googleapiclient.http import BatchHttpRequest
 
 from constants import INBOX_LABEL_NAME
+from simple_rosie_logger import SimpleRosieLogger
 
 #Turn off to do a full run
 DEBUG = True
@@ -16,6 +17,7 @@ MAX_SIZE = 5
 MAX_BATCH_SIZE = 100
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+rosieLogger = SimpleRosieLogger()
 service = None
 globalArchiveCounter = 0
 
@@ -34,6 +36,7 @@ def handler(event, context):
     labelInfoMap = fetchLabelInfo(credentials)
     logger.debug("LabelInfo: {}".format(labelInfoMap))
     getThreadsForLabels(labelInfoMap)
+    rosieLogger.save()
     logger.info(("*******************************\n"
                  "Archived Total of {} threads\n"
                  "*******************************").format(globalArchiveCounter))
@@ -68,6 +71,7 @@ def threadCallback(id, response, exception):
     if response and not exception:
         threadId = response.get('id', -1)
     logger.info("{}: Archived thread {}".format(id, threadId))
+    rosieLogger.logEmail(response)
 
     if exception:
         logger.error("Archiving thread failed: {}".format(exception))

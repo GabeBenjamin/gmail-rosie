@@ -10,6 +10,8 @@ from googleapiclient.http import BatchHttpRequest
 
 from constants import INBOX_LABEL_NAME
 
+#Turn off to do a full run
+DEBUG = True
 MAX_SIZE = 5
 MAX_BATCH_SIZE = 100
 logging.basicConfig(level=logging.DEBUG)
@@ -99,8 +101,8 @@ def threadsToArchiveCallback(id, response, exception):
         archiveBatch.add(service.users().threads().modify(userId='me', id=thread['id'], body=body), callback=threadCallback)
         counter += 1
 
-        # TODO DELETE THIS:
-        if counter >= MAX_SIZE:
+        # Only do 1 run for debug instead of all
+        if DEBUG:
             archiveBatch.execute()
             return
 
@@ -111,9 +113,6 @@ def threadsToArchiveCallback(id, response, exception):
 
     if counter > 0:
         archiveBatch.execute()
-
-
-
 
 def getThreadsForLabels(labelIdMap):
     """
@@ -129,7 +128,5 @@ def getThreadsForLabels(labelIdMap):
 
     threadFetchBatch.execute()
 
-
-# TODO Delete this
 if __name__ == '__main__':
     handler(None, None)
